@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.tang.game2048.AI.AlphaBeta;
 import com.example.tang.game2048.Animation.AnimationGrid;
 import com.example.tang.game2048.Model.Cell;
 import com.example.tang.game2048.Model.Grid;
@@ -51,10 +52,13 @@ public class MainGame {
     public long lastScore = 0;
     private long bufferScore = 0;
 
+
+    public AlphaBeta gameAI;
     public MainGame(Context context, MainView view) {
         mContext = context;
         mView = view;
         endingMaxValue = (int) Math.pow(2, view.numCellTypes - 1);
+        gameAI=new AlphaBeta();
     }
 
     public void newGame() {
@@ -89,7 +93,7 @@ public class MainGame {
 
     private void addRandomTile() {
         if (grid.isCellsAvailable()) {
-            int value = Math.random() < 0.9 ? 2 : 4;
+            int value = Math.random() < 0.7 ? 2 : 4;
             Tile tile = new Tile(grid.randomAvailableCell(), value);
             spawnTile(tile);
         }
