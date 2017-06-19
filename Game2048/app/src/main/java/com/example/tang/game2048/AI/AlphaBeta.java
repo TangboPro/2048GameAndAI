@@ -1,9 +1,13 @@
-import Util.AIUtil;
+package com.example.tang.game2048.AI;
+
+
+import com.example.tang.game2048.Model.Tile;
+import com.example.tang.game2048.Util.AIUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+import static com.example.tang.game2048.Util.AIUtil.*;
 
-import static Util.AIUtil.*;
 
 /**
  * Created by Tang on 2017/6/18.
@@ -33,10 +37,10 @@ public class AlphaBeta {
     public static void main(String[] args) {
         //测试转换
         int[][] field={
-                {4,4,8,0},
+                {4,4,8,2},
                 {0,2,4,32},
-                {2,2,2,4},
-                {2,0,0,2}
+                {0,2,2,4},
+                {2,2,2,2}
         };
         AlphaBeta gameAI=new AlphaBeta(field);
         print_board(gameAI.board);
@@ -45,6 +49,9 @@ public class AlphaBeta {
 //        gameAI.execute_move_1(gameAI.board);
 //        gameAI.execute_move_2(gameAI.board);
 //        gameAI.execute_move_3(gameAI.board);
+    }
+    public AlphaBeta(){
+        init_tables();
     }
 
     public AlphaBeta(int[][] field){
@@ -78,7 +85,6 @@ public class AlphaBeta {
                 }
             }
             score_table[row] = score;
-
 
             // Heuristic score
             float sum = 0;
@@ -158,6 +164,37 @@ public class AlphaBeta {
         }
     }
 
+    public int SinglePlayGame(Tile[][] field){
+
+        board=TileArrayToLong(field);
+        int moveno = 0;
+        int scorepenalty = 0; // "penalty" for obtaining free 4 tiles
+
+            int move;
+            long newboard;
+            for(move = 0; move < 4; move++) {
+                if(execute_move(move, board) != board)
+                    break;
+            }
+            if(move == 4)
+                return -1; // no legal moves
+            //++moveno;
+            System.out.println("Move #"+(moveno)+", current score="+(score_board(board) - scorepenalty));
+
+            //获得最好的move
+            move = find_best_move(board);
+            System.out.println("best move is:"+move);
+            if(move < 0)
+                return -1;
+
+//            newboard = execute_move(move, board);
+//
+//            print_board(newboard);
+//            if(newboard == board) {
+//                System.out.println("Illegal move!");
+//            }
+        return move;
+    }
 
     public void PlayGame(){
         int moveno = 0;
@@ -434,10 +471,6 @@ public class AlphaBeta {
         return b1 | (b2 >> 24) | (b3 << 24);
     }
 
-    class TimeVal {
-        public long    tv_sec;         /* seconds */
-        public long    tv_usec;        /* and microseconds */
-    }
     class EvalState {
         public Map<Long,TransTableEntry> trans_table=new HashMap<>(); // transposition table, to cache previously-seen moves
         public int maxdepth;

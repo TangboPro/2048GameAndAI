@@ -173,7 +173,6 @@ public class MainGame {
 
     public void move(int direction) {
         aGrid.cancelAnimations();
-        // 0: up, 1: right, 2: down, 3: left
         if (!isActive()) {
             return;
         }
@@ -260,9 +259,10 @@ public class MainGame {
     private Cell getVector(int direction) {
         Cell[] map = {
                 new Cell(0, -1), // up
-                new Cell(1, 0),  // right
                 new Cell(0, 1),  // down
-                new Cell(-1, 0)  // left
+                new Cell(-1, 0),  // left
+                new Cell(1, 0)  // right
+
         };
         return map[direction];
     }
@@ -354,5 +354,9 @@ public class MainGame {
 
     public boolean canContinue() {
         return !(gameState == GAME_ENDLESS || gameState == GAME_ENDLESS_WON);
+    }
+
+    public Object getAIMove(){
+        return gameAI.SinglePlayGame(grid.field);
     }
 }

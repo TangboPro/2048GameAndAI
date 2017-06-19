@@ -2,9 +2,23 @@ package com.example.tang.game2048;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import rx.Emitter;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func0;
+import rx.internal.operators.BlockingOperatorToIterator;
+import rx.observables.AsyncOnSubscribe;
+import rx.observables.SyncOnSubscribe;
+import rx.schedulers.Schedulers;
 
 /** controller*/
 class InputListener implements View.OnTouchListener {
@@ -84,7 +98,7 @@ class InputListener implements View.OnTouchListener {
                             moved = true;
                             previousDirection = previousDirection * 2;
                             veryLastDirection = 2;
-                            mView.game.move(2);
+                            mView.game.move(1);
                         } else if (((dy <= -SWIPE_THRESHOLD_VELOCITY && Math.abs(dy) >= Math.abs(dx)) || y - startingY <= -MOVE_THRESHOLD) && previousDirection % 3 != 0) {
                             moved = true;
                             previousDirection = previousDirection * 3;
@@ -96,12 +110,12 @@ class InputListener implements View.OnTouchListener {
                             moved = true;
                             previousDirection = previousDirection * 5;
                             veryLastDirection = 5;
-                            mView.game.move(1);
+                            mView.game.move(3);
                         } else if (((dx <= -SWIPE_THRESHOLD_VELOCITY && Math.abs(dx) >= Math.abs(dy)) || x - startingX <= -MOVE_THRESHOLD) && previousDirection % 7 != 0) {
                             moved = true;
                             previousDirection = previousDirection * 7;
                             veryLastDirection = 7;
-                            mView.game.move(3);
+                            mView.game.move(2);
                         }
                         if (moved) {
                             hasMoved = true;
@@ -121,25 +135,36 @@ class InputListener implements View.OnTouchListener {
                 //"Menu" inputs
                 if (!hasMoved) {
                     //按下按钮
-                    if(iconPressed(mView.sXAI,mView.sYIcons))
-                    {
-                        //游戏没有结束并且AI没有开启
+                    //游戏没有结束并且AI没有开启
+                    if(iconPressed(mView.sXAI,mView.sYIcons)) {
                         if (!mView.game.gameLost()) {
-
-                            new AlertDialog.Builder(mView.getContext())
-                                    .setPositiveButton(R.string.startai, new DialogInterface.OnClickListener() {
+                            Observable.create(new Observable.OnSubscribe<Object>() {
+                                @Override
+                                public void call(Subscriber<? super Object> subscriber) {
+                                    subscriber.onNext(mView.game.getAIMove());
+                                }
+                            }).subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<Object>() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Toast.makeText(mView.getContext(),"按钮",Toast.LENGTH_SHORT);
+                                        public void call(Object move) {
+                                            mView.game.move((int) move);
                                         }
-                                    })
-                                    .setNegativeButton(R.string.continue_game, null)
-                                    .setTitle(R.string.startai_dialog_title)
-                                    .setMessage(R.string.startai_dialog_message)
-                                    .show();
-
-                            //mView.game.move(3);
-                        }else{
+                                    });
+//                            new AlertDialog.Builder(mView.getContext())
+//                                    .setPositiveButton(R.string.startai, new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            mView.game.move(mView.game.getAIMove());
+//                                        }
+//                                    })
+//                                    .setNegativeButton(R.string.continue_game, null)
+//                                    .setTitle(R.string.startai_dialog_title)
+//                                    .setMessage(R.string.startai_dialog_message)
+//                                    .show();
+//
+//                            mView.game.move(3);
+                        } else {
                             //关闭AI
                         }
                     }

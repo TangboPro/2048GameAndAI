@@ -1,4 +1,8 @@
-package Util;
+package com.example.tang.game2048.Util;
+
+import com.example.tang.game2048.Model.Tile;
+
+import java.util.TimerTask;
 
 /**
  * Created by Tang on 2017/6/18.
@@ -23,6 +27,16 @@ public class AIUtil {
             for(int j=3;j>=0;j--){
                 value<<=4;
                 value+=DecimalToBinaryBit(field[i][j]);
+            }
+        return value;
+    }
+
+    public static Long TileArrayToLong(Tile[][] field){
+        long value=1;
+        for(int i=3;i>=0;i--)
+            for(int j=3;j>=0;j--){
+                value<<=4;
+                value+=DecimalToBinaryBit(field[j][i]!=null?field[j][i].getValue():0);
             }
         return value;
     }
