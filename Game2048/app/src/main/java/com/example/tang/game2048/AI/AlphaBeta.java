@@ -25,14 +25,14 @@ public class AlphaBeta {
     public static long col_down_table[];
     public static float heur_score_table[];
     public static float score_table[];
-    // Heuristic scoring settings
-    static final float SCORE_LOST_PENALTY = 200000.0f;
-    static final float SCORE_MONOTONICITY_POWER = 4.0f;
-    static final float SCORE_MONOTONICITY_WEIGHT = 47.0f;
-    static final float SCORE_SUM_POWER = 3.5f;
-    static final float SCORE_SUM_WEIGHT = 11.0f;
-    static final float SCORE_MERGES_WEIGHT = 700.0f;
-    static final float SCORE_EMPTY_WEIGHT = 270.0f;
+    // 得分
+    static final float SCORE_LOST_PENALTY = 200000.0f;//失败
+    static final float SCORE_MONOTONICITY_POWER = 4.0f;//单调性加权
+    static final float SCORE_MONOTONICITY_WEIGHT = 47.0f;//单调性得分
+    static final float SCORE_SUM_POWER = 3.5f;//总重量加权
+    static final float SCORE_SUM_WEIGHT = 11.0f;//总重量
+    static final float SCORE_MERGES_WEIGHT = 700.0f;//合并
+    static final float SCORE_EMPTY_WEIGHT = 270.0f;//空
 
     public static void main(String[] args) {
         //测试转换
@@ -186,13 +186,6 @@ public class AlphaBeta {
             System.out.println("best move is:"+move);
             if(move < 0)
                 return -1;
-
-//            newboard = execute_move(move, board);
-//
-//            print_board(newboard);
-//            if(newboard == board) {
-//                System.out.println("Illegal move!");
-//            }
         return move;
     }
 
@@ -368,6 +361,7 @@ public class AlphaBeta {
         state.curdepth--;
         return best;
     }
+
     static int count_empty(long x){
         x |= (x >> 2) & 0x3333333333333333L;
         x |= (x >> 1);
