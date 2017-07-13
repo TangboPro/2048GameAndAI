@@ -1,6 +1,8 @@
 package com.example.tang.game2048.AI;
 
 
+import android.util.Log;
+
 import com.example.tang.game2048.Model.Tile;
 import com.example.tang.game2048.Util.AIUtil;
 
@@ -25,6 +27,8 @@ public class AlphaBeta {
     public static long col_down_table[];
     public static float heur_score_table[];
     public static float score_table[];
+
+
     // 得分
     static final float SCORE_LOST_PENALTY = 200000.0f;//失败
     static final float SCORE_MONOTONICITY_POWER = 4.0f;//单调性加权
@@ -58,6 +62,7 @@ public class AlphaBeta {
         board=TileArrayToLong(field);
         init_tables();
     }
+
     /**初始化启发值*/
     private void init_tables() {
         row_left_table = new int[65536];
@@ -264,6 +269,8 @@ public class AlphaBeta {
 
         //move移动的方向
         //
+        Log.e("message",String.format("Move %s: result %s: eval'd %s moves (%s cache hits, %s cache size) in %.3f seconds (maxdepth=%s)\n",move,res,
+                state.moves_evaled,state.cachehits, (int)state.trans_table.size(), elapsed, state.maxdepth));
         System.out.println(String.format("Move %s: result %s: eval'd %s moves (%s cache hits, %s cache size) in %.3f seconds (maxdepth=%s)\n",move,res,
                 state.moves_evaled,state.cachehits, (int)state.trans_table.size(), elapsed, state.maxdepth));
         return res;

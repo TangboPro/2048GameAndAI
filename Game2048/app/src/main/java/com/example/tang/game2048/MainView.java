@@ -382,8 +382,21 @@ public class MainView extends View {
         paint.setTextSize(instructionsTextSize);
         paint.setTextAlign(Paint.Align.LEFT);
         int textShiftY = centerText() * 2;
-        canvas.drawText(getResources().getString(R.string.instructions),
+        canvas.drawText(getResources().getString(R.string.instructionsone),
                 startingX, endingY - textShiftY + textPaddingSize, paint);
+
+        paint.setTextSize(instructionsTextSize);
+        paint.setTextAlign(Paint.Align.LEFT);
+        textShiftY = centerText() * 8;
+        canvas.drawText(getResources().getString(R.string.instructionstwo),
+                startingX, endingY - textShiftY + textPaddingSize, paint);
+
+        paint.setTextSize(instructionsTextSize);
+        paint.setTextAlign(Paint.Align.LEFT);
+        textShiftY = centerText() * 14;
+        canvas.drawText(getResources().getString(R.string.instructionsthree),
+                startingX, endingY - textShiftY + textPaddingSize, paint);
+
     }
 
     //绘制棋盘背景颜色
@@ -550,8 +563,8 @@ public class MainView extends View {
         paint.setTextAlign(Paint.Align.CENTER);
         //paint.setTextSize(1000);
         instructionsTextSize = Math.min(
-                1000f * (widthWithPadding / (paint.measureText(getResources().getString(R.string.instructions)))),
-                textSize / 1.5f
+                1000f * (widthWithPadding / (paint.measureText(getResources().getString(R.string.instructionsone)))),
+                textSize / 2.5f
         );
         // 游戏结束字体大小屏幕适配
         gameOverTextSize = Math.min(
